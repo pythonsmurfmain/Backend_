@@ -39,3 +39,9 @@ app.get('/api/messages', async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'https://chat28410.vercel.app',  
+  credentials: true                         
+}));
