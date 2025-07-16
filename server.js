@@ -26,9 +26,23 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // ✅ Root route for health check
-app.get('/', (req, res) => {
-  res.send('✅ Chat backend is live.');
+// ✅ Verify session route
+app.get("/api/me", async (req, res) => {
+  const sessionId = req.cookies.sessionId;
+
+  if (!sessionId) {
+    return res.status(401).json({ error: "Not logged in" });
+  }
+
+  const user = await User.findOne({ sessionId });
+
+  if (!user) {
+    return res.status(403).json({ error: "Invalid session" });
+  }
+
+  res.json({ username: user.username });
 });
+
 
 // ✅ Login route
 app.post('/api/login', async (req, res) => {
